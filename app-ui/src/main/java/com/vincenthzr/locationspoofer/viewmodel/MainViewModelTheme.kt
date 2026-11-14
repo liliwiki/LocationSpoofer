@@ -31,3 +31,9 @@ internal fun MainViewModel.setPredictiveBack(enabled: Boolean) {
     settingsRepository.predictiveBack = enabled
     _uiState.update { it.copy(predictiveBack = enabled) }
 }
+
+/** MainActivity 监听这个状态，把本 App 的任务设为不在最近任务里显示 */
+internal fun MainViewModel.setHideFromRecents(enabled: Boolean) {
+    settingsRepository.hideFromRecents = enabled
+    _uiState.update { it.copy(hideFromRecents = enabled) }
+}

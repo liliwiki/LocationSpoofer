@@ -90,6 +90,7 @@ class MainViewModel(
             adaptiveScale = settingsRepository.adaptiveScale,
             pageScale = settingsRepository.pageScale,
             predictiveBack = settingsRepository.predictiveBack,
+            hideFromRecents = settingsRepository.hideFromRecents,
             stayAtRouteStopPoint = settingsRepository.stayAtRouteStopPoint,
             savedLocations = settingsRepository.getSavedLocations(),
             savedRoutes = emptyList(), // 将由 Room Flow 填充

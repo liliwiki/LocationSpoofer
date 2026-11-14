@@ -23,6 +23,8 @@
     <string name="theme_page_scale_desc">100% is the size fitted to this screen when the app was first opened. Adjust it freely; the map content stays the same</string>
     <string name="theme_predictive_back_title">Predictive back</string>
     <string name="theme_predictive_back_desc">When you swipe from the screen edge, the page shrinks with your finger and shows the previous page</string>
+    <string name="hide_from_recents_title">Hide from recent apps</string>
+    <string name="hide_from_recents_desc">After you leave the app it no longer shows in the recent apps screen; simulation keeps running in the background</string>
     <string name="env_data_title">Environment data</string>
     <string name="env_data_desc">Collect and manage local data, and data source tokens</string>
     <string name="env_data_collecting">Collecting</string>

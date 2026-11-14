@@ -27,6 +27,8 @@
     <string name="theme_page_scale_desc">100% 是第一次打开软件时按屏幕自动适配的大小，可以随意调大调小；地图内容不变</string>
     <string name="theme_predictive_back_title">预测性返回</string>
     <string name="theme_predictive_back_desc">从屏幕边缘侧滑时，页面跟手缩小并露出上一页</string>
+    <string name="hide_from_recents_title">从最近任务中隐藏</string>
+    <string name="hide_from_recents_desc">离开 App 后，多任务界面里不显示它；模拟仍在后台运行</string>
     <string name="env_data_title">环境数据</string>
     <string name="env_data_desc">采集、管理本地数据和数据源 Token</string>
     <string name="env_data_collecting">采集中</string>

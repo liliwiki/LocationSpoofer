@@ -123,6 +123,14 @@ class MainActivity : ComponentActivity() {
                 // 窗口背景和系统启动画面也要和软件的深浅色一致，否则冷启动会闪一下系统的颜色
                 SideEffect { window.setBackgroundDrawable(ColorDrawable(colorScheme.background.toArgb())) }
                 LaunchedEffect(uiState.themeMode) { applyWindowNightMode(uiState.themeMode) }
+                // 从最近任务中隐藏：改的是本 App 已有任务的属性，切走后多任务界面就不再显示
+                LaunchedEffect(uiState.hideFromRecents) {
+                    runCatching {
+                        getSystemService(android.app.ActivityManager::class.java)
+                            ?.appTasks
+                            ?.forEach { it.setExcludeFromRecents(uiState.hideFromRecents) }
+                    }
+                }
                 val baseDensity = LocalDensity.current
                 val appDensity = remember(baseDensity.density, baseDensity.fontScale, uiState.adaptiveScale, uiState.pageScale) {
                     Density(

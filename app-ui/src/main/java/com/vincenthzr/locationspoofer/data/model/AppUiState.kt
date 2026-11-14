@@ -122,6 +122,7 @@ data class AppState(
     val adaptiveScale: Float = 1f,
     val pageScale: Float = 1f,
     val predictiveBack: Boolean = true,
+    val hideFromRecents: Boolean = false,
     /** 免 Root 模式下开始模拟时还没被选为"模拟位置信息应用"，弹出设置引导 */
     val showMockSetupDialog: Boolean = false,
     val longitudeInput: String = "",
