@@ -58,6 +58,17 @@
             </intent-filter>
         </activity>
         <service android:name="com.amap.api.location.APSService" />
+
+        <!-- 软件更新：把下载好的安装包交给系统安装器 -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.updateprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/update_file_paths" />
+        </provider>
     </application>
 
 </manifest>
