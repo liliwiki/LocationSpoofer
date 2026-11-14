@@ -19,7 +19,7 @@
 
 > This repository is a modified version of [HuangZhuoRui/LocationSpoofer](https://github.com/HuangZhuoRui/LocationSpoofer) 3.0.0 (now archived), released separately from 4.0.0 on.
 > Main changes: map / route keys are now entered by the user, Baidu and Google route planning with walking / driving modes,
-> Pixel (Android 17) device adaptation, and simplified settings and UI. Downloads are on the [Releases](https://github.com/Lili679280/LocationSpoofer/releases) page.
+> Pixel (Android 17) device adaptation, and simplified settings and UI. Downloads are on the [Releases](https://github.com/liliwiki/LocationSpoofer/releases) page.
 
 ---
 
@@ -211,13 +211,13 @@ The app hooks system services directly, and their internals differ between vendo
 
 ### 1. Install
 
-Download the `arm64-v8a` (most phones) or `armeabi-v7a` (older 32-bit phones) APK from [Releases](https://github.com/Lili679280/LocationSpoofer/releases).
+Download the `arm64-v8a` (most phones) or `armeabi-v7a` (older 32-bit phones) APK from [Releases](https://github.com/liliwiki/LocationSpoofer/releases).
 
 Or build it yourself:
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/Lili679280/LocationSpoofer.git
+git clone https://github.com/liliwiki/LocationSpoofer.git
 
 # 2. Build and install Debug APK
 ./gradlew installDebug
