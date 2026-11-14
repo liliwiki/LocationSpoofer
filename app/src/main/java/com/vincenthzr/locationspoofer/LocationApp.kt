@@ -49,7 +49,8 @@ class LocationApp : Application(), XposedServiceHelper.OnServiceListener {
         val googleApiKey = prefs.getString("google_api_key", "")
         if (!Places.isInitialized() && !googleApiKey.isNullOrBlank()) {
             try {
-                Places.initialize(this, googleApiKey)
+                // 旧版 Places API 已不对新项目开放，必须走 Places API (New)
+                Places.initializeWithNewPlacesApiEnabled(this, googleApiKey)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
