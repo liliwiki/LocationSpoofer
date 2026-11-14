@@ -20,7 +20,7 @@
 
 > 本仓库是 [HuangZhuoRui/LocationSpoofer](https://github.com/HuangZhuoRui/LocationSpoofer) 3.0.0（已归档）的修改版，从 4.0.0 开始单独发布。
 > 主要改动：地图 / 路线 Key 改为用户自己填写，新增百度、谷歌路线规划与步行 / 驾车模式，Pixel（Android 17）实机适配，
-> 精简设置与界面。下载见 [Releases](https://github.com/Lili679280/LocationSpoofer/releases)。
+> 精简设置与界面。下载见 [Releases](https://github.com/liliwiki/LocationSpoofer/releases)。
 
 ---
 
@@ -216,13 +216,13 @@
 
 ### 1. 安装
 
-从 [Releases](https://github.com/Lili679280/LocationSpoofer/releases) 下载 `arm64-v8a`（绝大多数手机）或 `armeabi-v7a`（32 位老机型）安装包。
+从 [Releases](https://github.com/liliwiki/LocationSpoofer/releases) 下载 `arm64-v8a`（绝大多数手机）或 `armeabi-v7a`（32 位老机型）安装包。
 
 也可以自己编译：
 
 ```bash
 # 1. 克隆代码仓库
-git clone https://github.com/Lili679280/LocationSpoofer.git
+git clone https://github.com/liliwiki/LocationSpoofer.git
 
 # 2. 编译 Debug APK 并直接安装到设备
 ./gradlew installDebug
