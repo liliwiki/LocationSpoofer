@@ -33,6 +33,7 @@ import com.vincenthzr.locationspoofer.viewmodel.setLiquidGlass
 import com.vincenthzr.locationspoofer.viewmodel.setLiquidGlassStrength
 import com.vincenthzr.locationspoofer.viewmodel.setPageScale
 import com.vincenthzr.locationspoofer.viewmodel.setPredictiveBack
+import com.vincenthzr.locationspoofer.viewmodel.setHideFromRecents
 import com.vincenthzr.locationspoofer.viewmodel.setThemeMode
 import kotlin.math.roundToInt
 import top.yukonga.miuix.kmp.basic.Card as MiuixCard
@@ -164,6 +165,15 @@ fun ThemeSettingsScreen(
                             onCheckedChange = { viewModel.setPredictiveBack(it) }
                         )
                     }
+                }
+
+                MiuixCard(modifier = Modifier.fillMaxWidth(), cornerRadius = 18.dp, insideMargin = PaddingValues(16.dp)) {
+                    ThemeSwitchRow(
+                        title = stringResource(R.string.hide_from_recents_title),
+                        description = stringResource(R.string.hide_from_recents_desc),
+                        checked = uiState.hideFromRecents,
+                        onCheckedChange = { viewModel.setHideFromRecents(it) }
+                    )
                 }
             }
         }

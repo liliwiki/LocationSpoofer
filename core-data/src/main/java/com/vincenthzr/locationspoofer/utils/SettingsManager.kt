@@ -180,6 +180,11 @@ class SettingsManager(context: Context) {
         get() = prefs.getBoolean("predictive_back", true)
         set(value) = prefs.edit().putBoolean("predictive_back", value).apply()
 
+    /** 不在最近任务（多任务）列表里显示本 App */
+    var hideFromRecents: Boolean
+        get() = prefs.getBoolean("hide_from_recents", false)
+        set(value) = prefs.edit().putBoolean("hide_from_recents", value).apply()
+
     /** 开始模拟时是否强制重启已勾选作用域的目标 App，让它们加载当前模块并订阅框架配置 */
     var restartAppsOnSpoof: Boolean
         get() = prefs.getBoolean("restart_apps_on_spoof", true)

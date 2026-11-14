@@ -225,6 +225,12 @@ class SettingsRepository(private val settingsManager: SettingsManager) {
             settingsManager.predictiveBack = value
         }
 
+    var hideFromRecents: Boolean
+        get() = settingsManager.hideFromRecents
+        set(value) {
+            settingsManager.hideFromRecents = value
+        }
+
     var forceMockMode: Boolean
         get() = settingsManager.forceMockMode
         set(value) {
