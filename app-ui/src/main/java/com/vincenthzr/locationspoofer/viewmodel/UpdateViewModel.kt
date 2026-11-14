@@ -2,12 +2,21 @@ package com.vincenthzr.locationspoofer.viewmodel
 
 import android.app.DownloadManager
 import android.content.Context
+import android.content.Intent
+import android.os.Environment
+import android.widget.Toast
+import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vincenthzr.locationspoofer.data.model.GithubRelease
-import com.vincenthzr.locationspoofer.utils.UpdateManager
+import com.vincenthzr.locationspoofer.ui.R
+import java.io.File
+import java.io.IOException
+import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,8 +41,12 @@ class UpdateViewModel(private val context: Context) : ViewModel() {
     private val _uiState = MutableStateFlow(UpdateUiState())
     val uiState: StateFlow<UpdateUiState> = _uiState.asStateFlow()
 
-    private val updateManager = UpdateManager(context)
     private val okHttpClient = OkHttpClient()
+
+    /** 安装包几十 MB，读超时放宽，避免网速慢时中途断开 */
+    private val downloadClient = okHttpClient.newBuilder()
+        .readTimeout(60, TimeUnit.SECONDS)
+        .build()
 
     fun fetchReleases() {
         _uiState.update { it.copy(isLoading = true, error = null) }
@@ -110,60 +123,104 @@ class UpdateViewModel(private val context: Context) : ViewModel() {
         }
     }
 
+    private var downloadJob: Job? = null
+    private var downloadedApk: File? = null
+
+    /**
+     * 用 App 自己的网络连接下载，不走系统下载管理器：
+     * 部分 ROM（如 vivo）的下载管理器连 GitHub 会一直失败重试，界面停在 0% 且不报错。
+     */
     fun startDownload(url: String, versionName: String) {
-        val fileName = "LocationSpoofer_$versionName.apk"
-        val downloadId = updateManager.downloadApk(url, fileName)
+        downloadJob?.cancel()
+        val dir = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) ?: context.cacheDir
+        val target = File(dir, "LocationSpoofer_$versionName.apk")
+        val partial = File(dir, target.name + ".part")
+        downloadedApk = null
         _uiState.update {
             it.copy(
-                activeDownloadId = downloadId,
+                activeDownloadId = System.currentTimeMillis(),
                 activeDownloadUrl = url,
                 downloadProgress = 0,
-                downloadStatus = DownloadManager.STATUS_PENDING
+                downloadStatus = DownloadManager.STATUS_RUNNING
             )
         }
-        monitorDownload(downloadId)
-    }
-
-    private fun monitorDownload(downloadId: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
-            while (true) {
-                val status = updateManager.getDownloadStatus(downloadId)
-                val progress = updateManager.getDownloadProgress(downloadId)
-
-                withContext(Dispatchers.Main) {
-                    _uiState.update {
-                        it.copy(
-                            downloadStatus = status,
-                            downloadProgress = progress
-                        )
+        downloadJob = viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val request = Request.Builder().url(url).build()
+                downloadClient.newCall(request).execute().use { response ->
+                    if (!response.isSuccessful) throw IOException("HTTP ${response.code}")
+                    val body = response.body ?: throw IOException("empty response")
+                    val total = body.contentLength()
+                    var done = 0L
+                    var lastPercent = -1
+                    body.byteStream().use { input ->
+                        partial.outputStream().use { output ->
+                            val buffer = ByteArray(64 * 1024)
+                            while (true) {
+                                ensureActive()
+                                val n = input.read(buffer)
+                                if (n < 0) break
+                                output.write(buffer, 0, n)
+                                done += n
+                                val percent = if (total > 0) (done * 100 / total).toInt() else 0
+                                if (percent != lastPercent) {
+                                    lastPercent = percent
+                                    _uiState.update { it.copy(downloadProgress = percent) }
+                                }
+                            }
+                        }
                     }
+                    if (total > 0 && done != total) throw IOException("incomplete download")
                 }
-
-                if (status == DownloadManager.STATUS_SUCCESSFUL || status == DownloadManager.STATUS_FAILED) {
-                    break
+                target.delete()
+                if (!partial.renameTo(target)) throw IOException("cannot save the file")
+                downloadedApk = target
+                _uiState.update { it.copy(downloadProgress = 100, downloadStatus = DownloadManager.STATUS_SUCCESSFUL) }
+            } catch (e: CancellationException) {
+                partial.delete()
+                throw e
+            } catch (e: Exception) {
+                partial.delete()
+                _uiState.update {
+                    it.copy(
+                        activeDownloadId = null,
+                        activeDownloadUrl = null,
+                        downloadProgress = 0,
+                        downloadStatus = DownloadManager.STATUS_FAILED
+                    )
                 }
-                delay(500)
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.update_download_failed, e.message ?: e.javaClass.simpleName),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
         }
     }
 
     fun installApk() {
-        _uiState.value.activeDownloadId?.let { downloadId ->
-            updateManager.installApk(downloadId)
+        val apk = downloadedApk?.takeIf { it.exists() } ?: return
+        val uri = FileProvider.getUriForFile(context, "${context.packageName}.updateprovider", apk)
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            setDataAndType(uri, "application/vnd.android.package-archive")
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION
         }
+        context.startActivity(intent)
     }
 
     fun cancelDownload() {
-        _uiState.value.activeDownloadId?.let { downloadId ->
-            updateManager.cancelDownload(downloadId)
-            _uiState.update {
-                it.copy(
-                    activeDownloadId = null,
-                    activeDownloadUrl = null,
-                    downloadProgress = 0,
-                    downloadStatus = DownloadManager.STATUS_PENDING
-                )
-            }
+        downloadJob?.cancel()
+        downloadJob = null
+        downloadedApk = null
+        _uiState.update {
+            it.copy(
+                activeDownloadId = null,
+                activeDownloadUrl = null,
+                downloadProgress = 0,
+                downloadStatus = DownloadManager.STATUS_PENDING
+            )
         }
     }
 }
