@@ -149,9 +149,9 @@
     <string name="custom_amap_key_hint">Enter your AMap API Key</string>
     <string name="custom_baidu_key">Baidu Map API Key</string>
     <string name="custom_baidu_key_hint">Enter your Baidu Map API Key</string>
-    <string name="custom_google_key">Google Maps API Key</string>
-    <string name="custom_google_key_hint">Enter your Google Maps API Key</string>
-    <string name="google_key_required_hint">Enter your Google Maps API Key in Settings → Map config before searching with Google Maps</string>
+    <string name="custom_google_key">Google Search / Routes API Key</string>
+    <string name="custom_google_key_hint">Enter a key with Places API (New) and Routes API enabled</string>
+    <string name="google_key_required_hint">Enter your Google Search / Routes API Key in Settings → Map config before searching with Google Maps</string>
     <string name="copy">Copy</string>
     <string name="copied_to_clipboard">Copied to clipboard</string>
     <string name="restart_required_hint">Changes to the API Key require restarting the app to take full effect.</string>
@@ -570,5 +570,5 @@ Error details: %s</string>
     <string name="key_guide_title">How to apply for keys</string>
     <string name="key_guide_amap">1. Sign in at console.amap.com (personal developer verification is enough).\n2. App management → My apps → Create app, then Add Key.\n3. Choose the Android platform and enter the package name and SHA1 above (use this SHA1 for both release and debug codes).\n4. Paste the generated key into AMap API Key, save and restart the app.\nUsed for: map display, place search, route planning, location.</string>
     <string name="key_guide_baidu">1. At lbsyun.baidu.com open Console → App management → My apps → Create app.\n2. Choose Android SDK, enter the SHA1 (release) and package name above; the security code becomes SHA1;package.\n3. Paste the AK into Baidu Map API Key, save and restart the app.\nUsed for: map display, place search, route planning, and the real position indoors (returning after stopping, locating at startup).</string>
-    <string name="key_guide_google">1. At console.cloud.google.com create a project and set up billing (there is a free allowance).\n2. Under APIs and Services enable Places API and Routes API.\n3. Credentials → Create credentials → API key; restrict it to Android apps and add the package name and SHA1 above.\n4. Paste the key into Google Maps API Key, save and restart the app.\nUsed for: place search and route planning. The Google map display key can only be set at build time.</string>
+    <string name="key_guide_google">1. At console.cloud.google.com create a project and set up billing (there is a free allowance).\n2. Under APIs and Services enable Places API (New) and Routes API.\n3. Credentials → Create credentials → API key; restrict it to Android apps and add the package name and SHA1 above.\n4. Paste the key into Google Search / Routes API Key, save and restart the app.\nUsed for: place search and route planning. The Google map display key can only be set at build time.</string>
 </resources>
